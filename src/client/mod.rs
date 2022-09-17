@@ -1,6 +1,8 @@
 mod error;
 
 use std::{thread, time::Duration};
+use lazy_static::lazy_static;
+use regex::Regex;
 use serde::Deserialize;
 use self::error::ClientError;
 
@@ -102,21 +104,31 @@ impl Client {
             Ok(t) => t,
             Err(_) => return Err(ClientError::InvalidPage)
         };
-        let v_1: Vec<&str> = body.split("Current IP Address: ").collect();
         
-        if v_1.len() < 2 {
-            return Ok(None)
+        lazy_static!{
+            static ref RE: Regex = Regex::new("<html><head><title>Current IP Check</title></head><body>Current IP Address: (.*)</body></html>").unwrap();
         }
+        let captures = RE.captures(body.as_str());
 
-        let v_2: Vec<&str> = v_1[1].split("</body></html>").collect();
+        if let Some(unwrapped) = captures {
 
-        if v_2.len() < 2 {
-            return Ok(None)
+            if unwrapped.len() > 1 {
+                
+                return Ok(
+                    Some(
+                        String::from(unwrapped.get(1).map(| m | m.as_str()).unwrap())
+                    )
+                );
+                
+            }
+            
+            Ok(None)
+
+        } else {
+
+            Ok(None)
+
         }
-
-        // ugliest solution ever but yea
-
-        Ok(Some(String::from(v_2[0])))
 
     }
 }
