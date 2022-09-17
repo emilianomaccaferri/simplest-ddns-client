@@ -1,7 +1,7 @@
 use thiserror::Error;
 
 #[derive(Error, Debug)]
-pub enum ClientError{
+pub enum ClientError {
     #[error("invalid webpage")]
     InvalidPage,
 
@@ -9,11 +9,11 @@ pub enum ClientError{
     NetworkError,
 
     #[error("request failed with code {0}")]
-    NotOk(String)
+    NotOk(String),
 }
 
 #[derive(Error, Debug)]
-pub enum StrategyError{
+pub enum StrategyError {
     #[error("cannot reach URL")]
     NetworkError,
 }
