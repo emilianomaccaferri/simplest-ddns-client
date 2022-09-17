@@ -4,7 +4,7 @@ use client::{ GlobalConfig, Client };
 
 fn main() {
     
-    let config: String = fs::read_to_string("/etc/simplest-ovh-ddns-client/config.toml").unwrap();
+    let config: String = fs::read_to_string("/etc/simplest-ddns-client/config.toml").unwrap();
     let parsed_config: GlobalConfig = toml::from_str(config.as_str()).unwrap();
 
     println!("client started");
