@@ -11,3 +11,9 @@ pub enum ClientError{
     #[error("request failed with code {0}")]
     NotOk(String)
 }
+
+#[derive(Error, Debug)]
+pub enum StrategyError{
+    #[error("cannot reach URL")]
+    NetworkError,
+}

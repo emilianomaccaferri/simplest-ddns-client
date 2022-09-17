@@ -1,36 +1,40 @@
 mod error;
+mod strategies;
 
 use std::{thread, time::Duration};
 use lazy_static::lazy_static;
 use regex::Regex;
 use serde::Deserialize;
-use self::error::ClientError;
+use self::{error::ClientError, strategies::{Strategy, ovh::{OVHConfig, OVHStrategy}}};
 
 #[derive(Deserialize)]
-pub struct Config {
+pub struct GlobalConfig {
     pub initial_ip: String,
-    pub ovh_user: String,
-    pub ovh_password: String,
-    pub ovh_hostname: String
+    pub ovh: Option<OVHConfig>
 }
 
 pub struct Client{
     address: String,
-    user: String,
-    password: String,
-    hostname: String,
-    client: reqwest::blocking::Client
+    client: reqwest::blocking::Client,
+    strategy: Box<dyn Strategy>
 }
 
 impl Client {
-    pub fn new(config: Config) -> Self {
+    pub fn new(config: GlobalConfig, strategy_name: &str) -> Self {
+
+        let strategy: Box<dyn Strategy> = match strategy_name {
+
+            "ovh" => Box::from(
+                OVHStrategy::new(config.ovh)
+            ),
+            _ => panic!("invalid strategy name!")
+
+        };
 
         Client { 
             address: config.initial_ip, 
-            user: config.ovh_user, 
-            hostname: config.ovh_hostname,
-            password: config.ovh_password,
-            client: reqwest::blocking::Client::builder().timeout(Duration::from_secs(5)).build().unwrap() 
+            client: reqwest::blocking::Client::builder().timeout(Duration::from_secs(5)).build().unwrap(),
+            strategy
         }
 
     }
@@ -44,7 +48,7 @@ impl Client {
                 Err(ClientError::InvalidPage) => eprintln!("invalid page"),
                 Err(ClientError::NetworkError) => eprintln!("network error while trying to obtain wan ip"),
                 Err(ClientError::NotOk(s)) => eprintln!("request failed with code {}", s),
-                Ok(address) => self.handle(address)
+                Ok(address) => self.handle(&address)
             }
             
             thread::sleep(Duration::from_millis(10000));
@@ -53,40 +57,26 @@ impl Client {
         
     }
 
-    fn handle(self: &mut Self, address: Option<String>) -> () {
+    fn handle(self: &mut Self, address: &Option<String>) -> () {
 
         // check if the IP needs to be changed
+        if let Some(ip) = address {
+            
+            if ip.eq(&self.address) { return; }
+            println!("address changed from {} to {}, telling provider...", self.address, ip);
 
-        if address.to_owned().is_none() {
-            println!("invalid output");
-            return;
+            self.address = ip.clone();
+            match self.strategy.query(&self.client, &self.address) {
+                Err(err) => {
+                    println!("DDNS request failed: {:?}", err)
+                },
+                Ok(()) => {
+                    println!("DDNS request successful!")
+                }
+            }
+
         }
-
-        if address.to_owned().unwrap().eq(&self.address) {
-            println!("ip hasn't changed");
-            return;
-        }
-
-        println!("ip changed from {} to {}, telling OVH...", self.address, address.to_owned().unwrap());
-
-        self.address = address.to_owned().unwrap();
-        let url = format!(
-            "https://www.ovh.com/nic/update?system=dyndns&hostname={}&myip={}"
-        , self.hostname, address.to_owned().unwrap());
-
-        match self.client.get(url)
-            .basic_auth(&self.user, Some(&self.password))
-            .send() {
-                
-                Err(_) => eprintln!("network error while changing ip..."),
-                Ok(stuff) => {
-                    
-                    println!("OVH replied with: {:?}", stuff.text().unwrap_or("error while parsing response text".to_string()));
-                    
-                } 
         
-        }
-
     }
 
     fn address_check(self: &Self) -> Result<Option<String>, error::ClientError> {

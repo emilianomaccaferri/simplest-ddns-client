@@ -1,15 +1,15 @@
 mod client;
 use std::fs;
-use client::{ Config, Client };
+use client::{ GlobalConfig, Client };
 
 fn main() {
     
     let config: String = fs::read_to_string("/etc/simplest-ovh-ddns-client/config.toml").unwrap();
-    let parsed_config: Config = toml::from_str(config.as_str()).unwrap();
+    let parsed_config: GlobalConfig = toml::from_str(config.as_str()).unwrap();
 
     println!("client started");
-    println!("hostname: {}", parsed_config.ovh_hostname);
+    println!("initial ip: {}", parsed_config.initial_ip);
 
-    Client::new(parsed_config).run();
+    Client::new(parsed_config, "ovh").run();
 
 }
