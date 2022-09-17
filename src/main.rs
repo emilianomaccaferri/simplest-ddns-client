@@ -1,7 +1,7 @@
 mod client;
 
+use client::{Client, GlobalConfig};
 use std::fs;
-use client::{ GlobalConfig, Client };
 
 fn main() {
     let config: String = fs::read_to_string("/etc/simplest-ddns-client/config.toml").unwrap();
