@@ -14,18 +14,11 @@ This file will contain all the information needed (generally authentication stuf
 The first entry in this file is the initial address the client will base its queries from: `initial_ip`.<br>
 
 ## configurations list
-- [OVH](#ovh-configuration)
-- [CloudFlare](#cloudflare-configuration)
-- [DuckDNS](#duckdns-configuration)
+* [OVH](#ovh-configuration)
+* [CloudFlare](#cloudflare-configuration)
+* [DuckDNS](#duckdns-configuration)
 
 ## OVH configuration
-In the `[ovh]` section
-
-```
-user = "your-ovh-user" # the user you registered on ovh
-password = "ovh-password" # the password you chose on ovh
-hostname = "hostname.example.com" # the hostname you registered as dynamic on ovh
-```
 A complete `config.toml` file for OVH looks something like this:
 
 ```
@@ -36,7 +29,7 @@ password = "ovh-password" # the password you chose on ovh
 hostname = "hostname.example.com" # the hostname you registered as dynamic on ovh
 ```
 
-Refer to this guide for more: https://docs.ovh.com/gb/en/domains/hosting_dynhost/
+Refer to [this](https://docs.ovh.com/gb/en/domains/hosting_dynhost/) guide for more.
 
 ## CloudFlare configuration
 A complete `config.toml` file for CloudFlare looks something like this:

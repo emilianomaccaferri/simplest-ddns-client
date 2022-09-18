@@ -5,8 +5,8 @@ use self::{
     error::ClientError,
     strategies::{
         cloudflare::{CloudFlareConfig, CloudFlareStrategy},
-        ovh::{OVHConfig, OVHStrategy},
         duckdns::{DuckDnsConfig, DuckDnsStrategy},
+        ovh::{OVHConfig, OVHStrategy},
         Strategy,
     },
 };
