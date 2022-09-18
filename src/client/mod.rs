@@ -6,6 +6,7 @@ use self::{
     strategies::{
         cloudflare::{CloudFlareConfig, CloudFlareStrategy},
         ovh::{OVHConfig, OVHStrategy},
+        duckdns::{DuckDnsConfig, DuckDnsStrategy},
         Strategy,
     },
 };
@@ -19,6 +20,7 @@ pub struct GlobalConfig {
     pub initial_ip: String,
     pub ovh: Option<OVHConfig>,
     pub cloudflare: Option<CloudFlareConfig>,
+    pub duckdns: Option<DuckDnsConfig>,
 }
 
 pub struct Client {
@@ -32,6 +34,7 @@ impl Client {
         let strategy: Box<dyn Strategy> = match strategy_name {
             "ovh" => Box::from(OVHStrategy::new(config.ovh)),
             "cloudflare" => Box::from(CloudFlareStrategy::new(config.cloudflare)),
+            "duckdns" => Box::from(DuckDnsStrategy::new(config.duckdns)),
             _ => panic!("invalid strategy name!"),
         };
 

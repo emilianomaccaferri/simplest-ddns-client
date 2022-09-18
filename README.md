@@ -16,6 +16,7 @@ The first entry in this file is the initial address the client will base its que
 ## configurations list
 - [OVH](#ovh-configuration)
 - [CloudFlare](#cloudflare-configuration)
+- [DuckDNS](#duckdns-configuration)
 
 ## OVH configuration
 In the `[ovh]` section
@@ -49,3 +50,13 @@ hostname = "hostname.example.com" # the hostname you want to update
 ```
 
 Refer to [this](https://developers.cloudflare.com/fundamentals/get-started/basic-tasks/find-account-and-zone-ids/) guide to get `zoneid`.
+
+## DuckDNS configuration
+A complete `config.toml` file for DuckDNS looks something like this:
+
+```
+initial_ip = "1.1.1.1" # the ip the client will use when started
+[duckdns]
+token = "your-token" # the token duckdns gives to you
+subdomain = "your-subdomain" # the subdomain you chose on duckdns
+```
