@@ -10,5 +10,5 @@ fn main() {
     println!("client started");
     println!("initial ip: {}", parsed_config.initial_ip);
 
-    Client::new(parsed_config, "ovh").run();
+    Client::new(parsed_config, "provider").run();
 }

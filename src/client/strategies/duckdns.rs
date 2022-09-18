@@ -4,47 +4,45 @@ use serde::Deserialize;
 use super::Strategy;
 
 #[derive(Deserialize)]
-pub struct OVHConfig {
-    user: String,
-    password: String,
-    hostname: String,
+pub struct DuckDnsConfig {
+    token: String,
+    subdomain: String,
 }
 
-pub struct OVHStrategy {
-    pub config: OVHConfig,
+pub struct DuckDnsStrategy {
+    pub config: DuckDnsConfig,
 }
 
-impl OVHStrategy {
-    pub fn new(config: Option<OVHConfig>) -> Self {
+impl DuckDnsStrategy {
+    pub fn new(config: Option<DuckDnsConfig>) -> Self {
         if config.is_none() {
-            panic!("ovh config cannot be None!")
+            panic!("duckdns config cannot be None!")
         }
-        OVHStrategy {
+        DuckDnsStrategy {
             config: config.unwrap(),
         }
     }
 }
 
-impl Strategy for OVHStrategy {
+impl Strategy for DuckDnsStrategy {
     fn query(
         &self,
         client: &reqwest::blocking::Client,
         address: &str,
     ) -> Result<(), StrategyError> {
         let url = format!(
-            "https://www.ovh.com/nic/update?system=dyndns&hostname={}&myip={}",
-            self.config.hostname, address
+            "https://www.duckdns.org/update/{}/{}/{}",
+            self.config.subdomain, self.config.token, address
         );
 
         match client
             .get(url)
-            .basic_auth(&self.config.user, Some(&self.config.password))
             .send()
         {
             Err(_) => Err(StrategyError::NetworkError),
             Ok(stuff) => {
                 println!(
-                    "OVH replied with: {:?}",
+                    "DuckDNS replied with: {:?}",
                     stuff
                         .text()
                         .unwrap_or_else(|_| "error while parsing response text".to_string())
