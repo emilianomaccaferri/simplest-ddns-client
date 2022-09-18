@@ -4,6 +4,7 @@ mod strategies;
 use self::{
     error::ClientError,
     strategies::{
+        cloudflare::{CloudFlareConfig, CloudFlareStrategy},
         ovh::{OVHConfig, OVHStrategy},
         Strategy,
     },
@@ -17,6 +18,7 @@ use std::{thread, time::Duration};
 pub struct GlobalConfig {
     pub initial_ip: String,
     pub ovh: Option<OVHConfig>,
+    pub cloudflare: Option<CloudFlareConfig>,
 }
 
 pub struct Client {
@@ -29,6 +31,7 @@ impl Client {
     pub fn new(config: GlobalConfig, strategy_name: &str) -> Self {
         let strategy: Box<dyn Strategy> = match strategy_name {
             "ovh" => Box::from(OVHStrategy::new(config.ovh)),
+            "cloudflare" => Box::from(CloudFlareStrategy::new(config.cloudflare)),
             _ => panic!("invalid strategy name!"),
         };
 

@@ -1,6 +1,6 @@
 use super::error::StrategyError;
 
-// pub mod namecheap;
+pub mod cloudflare;
 pub mod ovh;
 
 pub trait Strategy {

@@ -16,4 +16,7 @@ pub enum ClientError {
 pub enum StrategyError {
     #[error("cannot reach URL")]
     NetworkError,
+
+    #[error("hostname not found")]
+    HostnameError,
 }

@@ -9,6 +9,7 @@ pub struct OVHConfig {
     password: String,
     hostname: String,
 }
+
 pub struct OVHStrategy {
     pub config: OVHConfig,
 }
