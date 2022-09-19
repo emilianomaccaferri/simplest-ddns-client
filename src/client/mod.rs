@@ -6,6 +6,7 @@ use self::{
     strategies::{
         cloudflare::{CloudFlareConfig, CloudFlareStrategy},
         duckdns::{DuckDnsConfig, DuckDnsStrategy},
+        ionos::{IONOSConfig, IONOSStrategy},
         ovh::{OVHConfig, OVHStrategy},
         Strategy,
     },
@@ -17,10 +18,12 @@ use std::{thread, time::Duration};
 
 #[derive(Deserialize)]
 pub struct GlobalConfig {
+    pub provider: String,
     pub initial_ip: String,
     pub ovh: Option<OVHConfig>,
     pub cloudflare: Option<CloudFlareConfig>,
     pub duckdns: Option<DuckDnsConfig>,
+    pub ionos: Option<IONOSConfig>,
 }
 
 pub struct Client {
@@ -30,11 +33,12 @@ pub struct Client {
 }
 
 impl Client {
-    pub fn new(config: GlobalConfig, strategy_name: &str) -> Self {
-        let strategy: Box<dyn Strategy> = match strategy_name {
+    pub fn new(config: GlobalConfig) -> Self {
+        let strategy: Box<dyn Strategy> = match &config.provider.to_lowercase()[..] {
             "ovh" => Box::from(OVHStrategy::new(config.ovh)),
             "cloudflare" => Box::from(CloudFlareStrategy::new(config.cloudflare)),
             "duckdns" => Box::from(DuckDnsStrategy::new(config.duckdns)),
+            "ionos" => Box::from(IONOSStrategy::new(config.ionos)),
             _ => panic!("invalid strategy name!"),
         };
 
