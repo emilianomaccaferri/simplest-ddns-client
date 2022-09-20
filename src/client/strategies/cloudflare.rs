@@ -72,6 +72,7 @@ impl Strategy for CloudFlareStrategy {
                 break;
             }
         }
+
         if dns_info.id.is_empty() {
             return Err(StrategyError::HostnameError);
         }

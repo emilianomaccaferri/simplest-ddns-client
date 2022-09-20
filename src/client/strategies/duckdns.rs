@@ -35,10 +35,7 @@ impl Strategy for DuckDnsStrategy {
             self.config.subdomain, self.config.token, address
         );
 
-        match client
-            .get(url)
-            .send()
-        {
+        match client.get(url).send() {
             Err(_) => Err(StrategyError::NetworkError),
             Ok(stuff) => {
                 println!(

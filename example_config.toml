@@ -1,0 +1,21 @@
+provider = "ovh"
+initial_ip = "1.1.1.1"
+
+[ovh]
+user = "your-ovh-user" # the user you registered on ovh
+password = "ovh-password" # the password you chose on ovh
+hostname = "hostname.example.com" # the hostname you registered as dynamic on ovh
+
+[cloudflare]
+apikey = "your-apikey" # API Token generated from the User Profile 'API Tokens' page
+zoneid = "zoneid" # domain's zone id
+hostname = "hostname.example.com" # the hostname you want to update
+
+[duckdns]
+token = "your-token" # the token duckdns gives to you
+subdomain = "your-subdomain" # the subdomain you chose on duckdns
+
+[ionos]
+prefix = "your-public-prefix" # the public prefix IONOS gives to you
+secret = "your-secret" # the secret key IONOS gives to you
+hostname = "hostname.example.com" # the hostname you want to update
